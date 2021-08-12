@@ -7,19 +7,30 @@
   </head>
   <body>
     <form class="search-form">
-      <input type="text" class="search" placeholder="City or State" />
+      <input
+        type="text"
+        class="search"
+        id="search"
+        placeholder="City or State"
+      />
       <ul class="suggestions" id="cities-dom">
         <li>Filter for a city</li>
         <li>or a state</li>
       </ul>
     </form>
     <script>
+      //input event listener
+      const textInput = document.getElementById("search");
+      console.log(textInput);
+      textInput.addEventListener("input", (event) =>
+        filterCityNodes(event.target.value)
+      );
+
       const endpoint =
         "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
       const fetchedCities = [];
       const citiesRefs = [];
       const citiesDom = document.getElementById("cities-dom");
-      console.log(citiesDom);
 
       fetch(endpoint)
         .then((data) => data.json())
@@ -28,7 +39,7 @@
         .then(() => citiesRefs.forEach((node) => citiesDom.appendChild(node)));
       // .then(() =>
       //   setTimeout(() => {
-      //     citiesRefs.forEach((elem) => citiesDom.removeChild(elem));
+      //     removeDOMChildren(citiesDom, citiesRefs);
       //   }, 5000)
       // );
 
@@ -36,6 +47,19 @@
         const cityElem = document.createElement("li");
         cityElem.innerHTML = `${city}, ${state}`;
         return cityElem;
+      };
+
+      const removeDOMChildren = (domElem, childrenRefs) => {
+        childrenRefs.forEach((node) => domElem.removeChild(node));
+      };
+
+      const filterCityNodes = (compString) => {
+        const filteredCities = fetchedCities.filter(
+          ({ city, state }) =>
+            city.toLowerCase().includes(compString.toLowerCase()) ||
+            state.toLowerCase().includes(compString.toLowerCase())
+        );
+        console.log(filteredCities);
       };
 
       const fillCitiesRefs = () => {
