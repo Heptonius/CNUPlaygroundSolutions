@@ -118,7 +118,9 @@
 
       // 7. sort Exercise
       // Sort the people alphabetically by last name
-      const peopleByName = people.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0));
+      const peopleByName = people.sort((nameOne, nameTwo) =>
+        nameOne > nameTwo ? 1 : nameOne < nameTwo ? -1 : 0
+      );
 
       // 8. Reduce Exercise
       // Sum up the instances of each of these
