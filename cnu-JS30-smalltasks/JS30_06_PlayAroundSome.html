@@ -7,63 +7,71 @@
   </head>
   <body>
     <form class="search-form">
-      <input
-        type="text"
-        class="search"
-        id="search"
-        placeholder="City or State"
-      />
-      <ul class="suggestions" id="cities-dom">
-        <li>Filter for a city</li>
-        <li>or a state</li>
-      </ul>
+      <input type="text" class="search" id="search" placeholder="City or State" />
+      <ul class="suggestions" id="cities-dom"></ul>
     </form>
     <script>
-      //input event listener
-      const textInput = document.getElementById("search");
-      console.log(textInput);
-      textInput.addEventListener("input", (event) =>
-        filterCityNodes(event.target.value)
-      );
-
-      const endpoint =
+      const ENDPOINT =
         "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
-      const fetchedCities = [];
-      const citiesRefs = [];
-      const citiesDom = document.getElementById("cities-dom");
 
-      fetch(endpoint)
+      // DOM references
+      const citiesDom = document.getElementById("cities-dom");
+      const textInput = document.getElementById("search");
+      textInput.addEventListener("input", (event) => refreshList(citiesDom));
+
+      //fetch and populate cities array
+      const cities = { fetchedCities: [], filteredCities: [] };
+
+      fetch(ENDPOINT)
         .then((data) => data.json())
-        .then((data) => fetchedCities.push(...data))
-        .then(() => fillCitiesRefs())
-        .then(() => citiesRefs.forEach((node) => citiesDom.appendChild(node)));
-      // .then(() =>
-      //   setTimeout(() => {
-      //     removeDOMChildren(citiesDom, citiesRefs);
-      //   }, 5000)
-      // );
+        .then((data) => cities.fetchedCities.push(...data))
+        .then(() => refreshList(citiesDom));
+      // .then(() => appendLiElems(citiesDom, citiesRefs));
+
+      const refreshList = (domElem) => {
+        removeDOMChildren(domElem);
+        if (textInput.value !== "") {
+          const filteredCities = filterCityNodes(textInput.value).map((elem) =>
+            createCityElem(elem)
+          );
+          appendLiElems(domElem, filteredCities);
+        }
+        //default case when textInput is empty
+        else {
+          const defaultElemOne = document.createElement("li");
+          defaultElemOne.innerHTML = "Filter for a city";
+          const defaultElemTwo = document.createElement("li");
+          defaultElemTwo.innerHTML = "or a state";
+          appendLiElems(citiesDom, [defaultElemOne, defaultElemTwo]);
+        }
+      };
+
+      const removeDOMChildren = (domElem) => {
+        if (domElem.children !== undefined) {
+          [...domElem.children].forEach((child) => domElem.removeChild(child));
+        }
+      };
+
+      const filterCityNodes = (compString) => {
+        return cities.fetchedCities.filter(({ city, state }) => {
+          if (city.toLowerCase().includes(compString.toLowerCase())) {
+            return true;
+          }
+          if (state.toLowerCase().includes(compString.toLowerCase())) {
+            return true;
+          }
+        });
+      };
 
       const createCityElem = ({ city, state }) => {
         const cityElem = document.createElement("li");
         cityElem.innerHTML = `${city}, ${state}`;
+        cityElem.className = "city-li";
         return cityElem;
       };
 
-      const removeDOMChildren = (domElem, childrenRefs) => {
-        childrenRefs.forEach((node) => domElem.removeChild(node));
-      };
-
-      const filterCityNodes = (compString) => {
-        const filteredCities = fetchedCities.filter(
-          ({ city, state }) =>
-            city.toLowerCase().includes(compString.toLowerCase()) ||
-            state.toLowerCase().includes(compString.toLowerCase())
-        );
-        console.log(filteredCities);
-      };
-
-      const fillCitiesRefs = () => {
-        fetchedCities.forEach((city) => citiesRefs.push(createCityElem(city)));
+      const appendLiElems = (domElem, liElems) => {
+        liElems.forEach((node) => domElem.appendChild(node));
       };
     </script>
   </body>
