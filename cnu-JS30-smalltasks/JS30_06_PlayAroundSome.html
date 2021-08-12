@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="JS30_06_Style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions" id="cities-dom">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+      const fetchedCities = [];
+      const citiesRefs = [];
+      const citiesDom = document.getElementById("cities-dom");
+      console.log(citiesDom);
+
+      fetch(endpoint)
+        .then((data) => data.json())
+        .then((data) => fetchedCities.push(...data))
+        .then(() => fillCitiesRefs())
+        .then(() => citiesRefs.forEach((node) => citiesDom.appendChild(node)));
+      // .then(() =>
+      //   setTimeout(() => {
+      //     citiesRefs.forEach((elem) => citiesDom.removeChild(elem));
+      //   }, 5000)
+      // );
+
+      const createCityElem = ({ city, state }) => {
+        const cityElem = document.createElement("li");
+        cityElem.innerHTML = `${city}, ${state}`;
+        return cityElem;
+      };
+
+      const fillCitiesRefs = () => {
+        fetchedCities.forEach((city) => citiesRefs.push(createCityElem(city)));
+      };
+    </script>
+  </body>
+</html>
