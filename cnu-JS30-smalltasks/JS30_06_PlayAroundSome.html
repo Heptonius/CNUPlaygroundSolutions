@@ -7,7 +7,12 @@
   </head>
   <body>
     <form class="search-form">
-      <input type="text" class="search" id="search" placeholder="City or State" />
+      <input
+        type="text"
+        class="search"
+        id="search"
+        placeholder="City or State"
+      />
       <ul class="suggestions" id="cities-dom"></ul>
     </form>
     <script>
@@ -52,16 +57,19 @@
         }
       };
 
-      const filterCityNodes = (compString) => {
-        return cities.fetchedCities.filter(({ city, state }) => {
-          if (city.toLowerCase().includes(compString.toLowerCase())) {
+      const testStringAgainst = (string, testString) => {
+        return string.toLowerCase().includes(testString.toLowerCase());
+      };
+
+      const filterCityNodes = (compString) =>
+        cities.fetchedCities.filter(({ city, state }) => {
+          if (testStringAgainst(city, compString)) {
             return true;
           }
-          if (state.toLowerCase().includes(compString.toLowerCase())) {
+          if (testStringAgainst(state, compString)) {
             return true;
           }
         });
-      };
 
       const createCityElem = ({ city, state }) => {
         const cityElem = document.createElement("li");

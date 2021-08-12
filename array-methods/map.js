@@ -16,11 +16,3 @@ const map = (callback, array) => {
   console.timeEnd("test");
   return resArray;
 };
-
-const map = (callback, array) => {
-  const resArray = [];
-  for (let i = 0; i < array.length; i++) {
-    resArray[i] = callback(array[i], i, array);
-  }
-  return resArray;
-};
