@@ -1,9 +1,9 @@
 const map = (callback, array) => {
-  console.time("test");
-  if (array == undefined) {
+  // console.time("test");
+  if (array === undefined) {
     throw new Error("Input array undefined");
   }
-  if (callback == undefined) {
+  if (callback === undefined) {
     throw new Error("Callback function not undefined");
   }
 
@@ -13,6 +13,6 @@ const map = (callback, array) => {
   for (let i = 0; i < array.length; i++) {
     resArray[i] = callback(array[i], i, array);
   }
-  console.timeEnd("test");
+  // console.timeEnd("test");
   return resArray;
 };
