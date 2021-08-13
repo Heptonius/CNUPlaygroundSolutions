@@ -62,14 +62,26 @@
       };
 
       const filterCityNodes = (compString) =>
-        cities.fetchedCities.filter(({ city, state }) => {
-          if (testStringAgainst(city, compString)) {
-            return true;
-          }
-          if (testStringAgainst(state, compString)) {
-            return true;
-          }
-        });
+        cities.fetchedCities
+          //cities filter based on compString from textInput
+          .filter(({ city, state }) => {
+            if (testStringAgainst(city, compString)) {
+              return true;
+            }
+            if (testStringAgainst(state, compString)) {
+              return true;
+            }
+          })
+          //sort filteredCities alphabetically
+          .sort(({ city: cityOne }, { city: cityTwo }) => {
+            if (cityOne > cityTwo) {
+              return 1;
+            }
+            if (cityOne < cityTwo) {
+              return -1;
+            }
+            return 0;
+          });
 
       const createCityElem = ({ city, state }) => {
         const cityElem = document.createElement("li");
