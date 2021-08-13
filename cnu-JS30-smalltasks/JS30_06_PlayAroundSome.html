@@ -31,7 +31,6 @@
         .then((data) => data.json())
         .then((data) => cities.fetchedCities.push(...data))
         .then(() => refreshList(citiesDom));
-      // .then(() => appendLiElems(citiesDom, citiesRefs));
 
       const refreshList = (domElem) => {
         removeDOMChildren(domElem);
