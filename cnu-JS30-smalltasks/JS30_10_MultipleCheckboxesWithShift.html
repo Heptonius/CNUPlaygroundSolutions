@@ -89,7 +89,7 @@
         <p>Good Luck!</p>
       </div>
       <div class="item">
-        <input type="checkbox" checked class="shift-select" />
+        <input type="checkbox" class="shift-select" />
         <p>Don't forget to tweet your result!</p>
       </div>
     </div>
@@ -98,21 +98,42 @@
       const checkboxes = document.getElementsByClassName("shift-select");
 
       let shiftHeldDown = false;
-      let currentItem;
+      let previousItem;
 
-      function setCurrentItem({ target }) {
-        currentItem = target;
+      function getCheckboxIndex(checkbox) {
+        return [...checkboxes].indexOf(checkbox);
+      }
+
+      function handleCheckboxCheck(target) {
+        const firstIndex = getCheckboxIndex(previousItem);
+        const secondIndex = getCheckboxIndex(target);
+        if (shiftHeldDown) {
+          if (firstIndex < secondIndex) {
+            for (
+              let i = getCheckboxIndex(previousItem) + 1;
+              i < getCheckboxIndex(target);
+              i++
+            ) {
+              checkboxes[i].checked = !checkboxes[i].checked;
+            }
+          }
+          if (firstIndex > secondIndex) {
+            for (
+              let i = getCheckboxIndex(previousItem) - 1;
+              i > getCheckboxIndex(target);
+              i--
+            ) {
+              checkboxes[i].checked = !checkboxes[i].checked;
+            }
+          }
+        }
+        previousItem = target;
       }
 
       function handleClick({ target }) {
-        console.log(currentItem);
-
         if (target.type === "checkbox") {
           handleCheckboxCheck(target);
         }
-        setCurrentItem(target);
-
-        console.log([...checkboxes]);
       }
 
       function handleKeyPress({ code }) {
@@ -120,21 +141,12 @@
           shiftHeldDown = false;
           document.removeEventListener("keyup", resetShiftHeld);
         }
-
         document.addEventListener("keyup", resetShiftHeld);
 
         if (code === "ShiftLeft") {
           shiftHeldDown = true;
         } else {
           shiftHeldDown = false;
-        }
-      }
-
-      function handleCheckboxCheck(target) {
-        if (shiftHeldDown) {
-          [...checkboxes].forEach((box) => (box.checked = !box.checked));
-        } else {
-          console.log(target.checked);
         }
       }
 
