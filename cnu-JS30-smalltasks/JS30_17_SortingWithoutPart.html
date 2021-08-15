@@ -62,6 +62,7 @@
 
       function stripPrefix(string) {
         return string.replace(/^(an|a|the)\s/i, "").trim();
+        //^an\s|^a\s|^the\s - another regex solution without capturing group
       }
 
       function compareNames(firstName, secondName) {

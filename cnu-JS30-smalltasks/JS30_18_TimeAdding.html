@@ -87,17 +87,11 @@
             };
           }
         });
-
+      //TODO: totalTime add up from videoTimes array
       const totalTime = { hours: 0, minutes: 0, seconds: 0 };
       console.log(videoTimes);
-      totalTime.seconds = videoTimes.reduce(
-        (total, current) => total + Number(current[1]),
-        0
-      );
-      totalTime.minutes = videoTimes.reduce(
-        (total, current) => total + Number(current[0]),
-        0
-      );
+      totalTime.seconds = videoTimes.reduce((total, current) => total + Number(current[1]), 0);
+      totalTime.minutes = videoTimes.reduce((total, current) => total + Number(current[0]), 0);
       console.log(totalTime);
     </script>
   </body>
