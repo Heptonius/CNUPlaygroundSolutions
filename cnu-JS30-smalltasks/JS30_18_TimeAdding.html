@@ -87,11 +87,37 @@
             };
           }
         });
-      //TODO: totalTime add up from videoTimes array
-      const totalTime = { hours: 0, minutes: 0, seconds: 0 };
-      console.log(videoTimes);
-      totalTime.seconds = videoTimes.reduce((total, current) => total + Number(current[1]), 0);
-      totalTime.minutes = videoTimes.reduce((total, current) => total + Number(current[0]), 0);
+
+      function reduceVideoTimes(
+        { totalHours, totalMinutes, totalSeconds },
+        { hours, minutes, seconds }
+      ) {
+        return {
+          totalHours: totalHours + hours,
+          totalMinutes: totalMinutes + minutes,
+          totalSeconds: totalSeconds + seconds,
+        };
+      }
+
+      function carryOverTimeUnits({ totalHours, totalMinutes, totalSeconds }) {
+        const carriedMinsFromSec = Math.floor(totalSeconds / 60);
+        const carriedHoursFromMins = Math.floor(
+          (totalMinutes + carriedMinsFromSec) / 60
+        );
+        return {
+          hours: totalHours + carriedHoursFromMins,
+          minutes: (totalMinutes + carriedMinsFromSec) % 60,
+          seconds: totalSeconds % 60,
+        };
+      }
+
+      const totalTime = carryOverTimeUnits(
+        videoTimes.reduce(reduceVideoTimes, {
+          totalHours: 0,
+          totalMinutes: 0,
+          totalSeconds: 0,
+        })
+      );
       console.log(totalTime);
     </script>
   </body>
