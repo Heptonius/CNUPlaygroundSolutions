@@ -92,32 +92,35 @@
         { totalHours, totalMinutes, totalSeconds },
         { hours, minutes, seconds }
       ) {
-        return {
-          totalHours: totalHours + hours,
-          totalMinutes: totalMinutes + minutes,
-          totalSeconds: totalSeconds + seconds,
-        };
-      }
-
-      function carryOverTimeUnits({ totalHours, totalMinutes, totalSeconds }) {
-        const carriedMinsFromSec = Math.floor(totalSeconds / 60);
+        const carriedMinsFromSec = Math.floor((totalSeconds + seconds) / 60);
         const carriedHoursFromMins = Math.floor(
-          (totalMinutes + carriedMinsFromSec) / 60
+          (totalMinutes + minutes + carriedMinsFromSec) / 60
         );
         return {
-          hours: totalHours + carriedHoursFromMins,
-          minutes: (totalMinutes + carriedMinsFromSec) % 60,
-          seconds: totalSeconds % 60,
+          totalHours: totalHours + hours + carriedHoursFromMins,
+          totalMinutes: (totalMinutes + minutes + carriedMinsFromSec) % 60,
+          totalSeconds: (totalSeconds + seconds) % 60,
         };
       }
 
-      const totalTime = carryOverTimeUnits(
-        videoTimes.reduce(reduceVideoTimes, {
-          totalHours: 0,
-          totalMinutes: 0,
-          totalSeconds: 0,
-        })
-      );
+      // function carryOverTimeUnits({ totalHours, totalMinutes, totalSeconds }) {
+      //   const carriedMinsFromSec = Math.floor(totalSeconds / 60);
+      //   const carriedHoursFromMins = Math.floor(
+      //     (totalMinutes + carriedMinsFromSec) / 60
+      //   );
+      //   return {
+      //     hours: totalHours + carriedHoursFromMins,
+      //     minutes: (totalMinutes + carriedMinsFromSec) % 60,
+      //     seconds: totalSeconds % 60,
+      //   };
+      // }
+
+      const totalTime = videoTimes.reduce(reduceVideoTimes, {
+        totalHours: 0,
+        totalMinutes: 0,
+        totalSeconds: 0,
+      });
+
       console.log(totalTime);
     </script>
   </body>
