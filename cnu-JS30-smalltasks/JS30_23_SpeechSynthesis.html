@@ -30,52 +30,56 @@
     </div>
 
     <script>
-      const msg = new SpeechSynthesisUtterance();
-
+      //  OPTIONS DOMS
       const voicesDropdown = document.querySelector('[name="voice"]');
-      const options = document.querySelectorAll(
-        '[type="range"], [name="text"]'
-      );
+      const rateInput = document.querySelector('[name="rate"]');
+      const pitchInput = document.querySelector('[name="pitch"]');
+      const voiceSelect = document.querySelector("#voices");
+
+      //  INPUTS / CONTROLS
+      const inputTxt = document.querySelector('[name="text"]');
       const speakButton = document.querySelector("#speak");
       const stopButton = document.querySelector("#stop");
 
+      const msg = new SpeechSynthesisUtterance();
       var synth = window.speechSynthesis;
+      const voices = [];
 
-      var voiceSelect = document.querySelector("#voices");
-
-      const inputTxt = document.querySelector('[name="text"]');
-
-      function speakBotSpeak() {
+      function startSpeech() {
         var msg = new SpeechSynthesisUtterance(inputTxt.value);
         msg.voice = voices[voiceSelect.value];
+        msg.rate = rateInput.value;
+        msg.pitch = pitchInput.value;
         synth.speak(msg);
-        inputTxt.blur();
       }
-      const voices = new Promise((resolve, reject) => {
+
+      function stopSpeech() {
+        synth.cancel();
+      }
+
+      speakButton.addEventListener("click", startSpeech);
+      stopButton.addEventListener("click", stopSpeech);
+
+      function populateVoicesOptions(voiceOptions) {
+        for (var i = 0; i < voiceOptions.length; i++) {
+          var option = document.createElement("option");
+          option.textContent = `${voiceOptions[i].name} (${voiceOptions[i].lang})`;
+          option.value = i;
+          voiceSelect.appendChild(option);
+        }
+      }
+
+      new Promise((resolve, reject) => {
         id = setInterval(() => {
           if (synth.getVoices().length !== 0) {
             resolve(synth.getVoices());
             clearInterval(id);
           }
         }, 10);
+      }).then((voiceOptions) => {
+        voices.push(...voiceOptions);
+        populateVoicesOptions(voiceOptions);
       });
-
-      function populateVoicesOptions(voiceOptions) {
-        for (var i = 0; i < voiceOptions.length; i++) {
-          console.log("looping through voice options");
-          var option = document.createElement("option");
-          option.textContent =
-            voiceOptions[i].name + " (" + voiceOptions[i].lang + ")";
-          option.value = i;
-          voiceSelect.appendChild(option);
-        }
-      }
-
-      function stopBotStop() {}
-
-      speakButton.addEventListener("click", speakBotSpeak);
-      stopButton.addEventListener("click", stopBotStop);
-      voices.then(populateVoicesOptions);
     </script>
   </body>
 </html>
