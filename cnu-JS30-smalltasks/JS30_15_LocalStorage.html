@@ -86,11 +86,11 @@
         itemsList.innerHTML = [...liItemsList].join("");
       }
 
-      function getItemsFromLocal() {
+      function populateItemsFromLocal() {
         const localInString = localStorage.getItem(TAPAS_LOCAL_STORAGE_KEY);
         if (localInString) items.push(...JSON.parse(localInString));
-        if (items.length === 0) {
-          localStorage.setItem(TAPAS_LOCAL_STORAGE_KEY, []);
+        else {
+          localStorage.setItem(TAPAS_LOCAL_STORAGE_KEY, JSON.stringify([]));
         }
       }
 
@@ -121,8 +121,8 @@
       }
 
       function handleClick(event) {
-        const targetLiElem = event.path[1];
         if (event.target.classList.contains("item-delete-btn")) {
+          const targetLiElem = event.path[1];
           removeItem(targetLiElem);
         }
       }
@@ -130,7 +130,7 @@
       addItemBtn.addEventListener("click", handleAddItem);
       document.addEventListener("click", handleClick);
 
-      getItemsFromLocal();
+      populateItemsFromLocal();
       refreshLiItems(items);
     </script>
   </body>
