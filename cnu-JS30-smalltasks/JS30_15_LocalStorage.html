@@ -75,14 +75,14 @@
           return `<li>Waiting for Tapas...</li>`;
         } else {
           const liElemsList = items.map((itemName) => {
-            return `<li>${itemName}<button class="item-delete-btn">delete</button></li>`;
+            return `<li>${itemName}<button class="${className}">delete</button></li>`;
           });
           return liElemsList;
         }
       }
 
       function refreshLiItems(itemsArray) {
-        const liItemsList = createLiItems(itemsArray);
+        const liItemsList = createLiItems(itemsArray, "item-delete-btn");
         itemsList.innerHTML = [...liItemsList].join("");
       }
 
