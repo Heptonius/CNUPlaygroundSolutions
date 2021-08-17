@@ -68,25 +68,22 @@
       <li data-time="1:15:04">Video 60</li>
     </ul>
     <script>
+      function videoTimeToTimeObj(videoTime) {
+        const indexDifference = 3 - videoTime.length;
+        return {
+          hours:
+            videoTime[0 - indexDifference] !== undefined
+              ? Number(videoTime[0 - indexDifference])
+              : 0,
+          minutes: Number(videoTime[1 - indexDifference]),
+          seconds: Number(videoTime[2 - indexDifference]),
+        };
+      }
+
       const videosList = document.getElementById("videos").children;
       const videoTimes = [...videosList]
         .map((videoElem) => videoElem.dataset.time.split(":"))
-        .map((videoElem) => {
-          if (videoElem.length === 2) {
-            return {
-              hours: 0,
-              minutes: Number(videoElem[0]),
-              seconds: Number(videoElem[1]),
-            };
-          }
-          if (videoElem.length === 3) {
-            return {
-              hours: Number(videoElem[0]),
-              minutes: Number(videoElem[1]),
-              seconds: Number(videoElem[2]),
-            };
-          }
-        });
+        .map(videoTimeToTimeObj);
 
       function reduceVideoTimes(
         { totalHours, totalMinutes, totalSeconds },
@@ -102,18 +99,6 @@
           totalSeconds: (totalSeconds + seconds) % 60,
         };
       }
-
-      // function carryOverTimeUnits({ totalHours, totalMinutes, totalSeconds }) {
-      //   const carriedMinsFromSec = Math.floor(totalSeconds / 60);
-      //   const carriedHoursFromMins = Math.floor(
-      //     (totalMinutes + carriedMinsFromSec) / 60
-      //   );
-      //   return {
-      //     hours: totalHours + carriedHoursFromMins,
-      //     minutes: (totalMinutes + carriedMinsFromSec) % 60,
-      //     seconds: totalSeconds % 60,
-      //   };
-      // }
 
       const totalTime = videoTimes.reduce(reduceVideoTimes, {
         totalHours: 0,
