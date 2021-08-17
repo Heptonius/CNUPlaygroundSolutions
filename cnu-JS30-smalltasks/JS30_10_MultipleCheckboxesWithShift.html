@@ -104,54 +104,36 @@
         return [...checkboxes].indexOf(checkbox);
       }
 
-      function handleCheckboxCheck(target) {
-        const firstIndex = getCheckboxIndex(previousItem);
-        const secondIndex = getCheckboxIndex(target);
-        if (shiftHeldDown) {
-          if (firstIndex < secondIndex) {
-            for (
-              let i = getCheckboxIndex(previousItem) + 1;
-              i < getCheckboxIndex(target);
-              i++
-            ) {
-              checkboxes[i].checked = !checkboxes[i].checked;
-            }
-          }
-          if (firstIndex > secondIndex) {
-            for (
-              let i = getCheckboxIndex(previousItem) - 1;
-              i > getCheckboxIndex(target);
-              i--
-            ) {
-              checkboxes[i].checked = !checkboxes[i].checked;
-            }
-          }
-        }
-        previousItem = target;
-      }
-
-      function handleClick({ target }) {
-        if (target.type === "checkbox") {
-          handleCheckboxCheck(target);
+      function switchCheckboxes(firstIndex, secondIndex) {
+        for (let i = firstIndex; i < secondIndex; i++) {
+          checkboxes[i].checked = !checkboxes[i].checked;
         }
       }
 
-      function handleKeyPress({ code }) {
-        function resetShiftHeld() {
-          shiftHeldDown = false;
-          document.removeEventListener("keyup", resetShiftHeld);
-        }
-        document.addEventListener("keyup", resetShiftHeld);
+      function checkThroughCheckboxes(firstCheckbox, secondCheckbox) {
+        const firstIndex = getCheckboxIndex(firstCheckbox);
+        const secondIndex = getCheckboxIndex(secondCheckbox);
 
-        if (code === "ShiftLeft") {
-          shiftHeldDown = true;
+        if (firstIndex < secondIndex) {
+          switchCheckboxes(firstIndex + 1, secondIndex);
         } else {
-          shiftHeldDown = false;
+          switchCheckboxes(secondIndex + 1, firstIndex);
         }
       }
 
+      function handleCheckboxCheck(event) {
+        if (event.shiftKey) {
+          checkThroughCheckboxes(previousItem, event.target);
+        }
+        previousItem = event.target;
+      }
+
+      function handleClick(event) {
+        if (event.target.type === "checkbox") {
+          handleCheckboxCheck(event);
+        }
+      }
       document.addEventListener("click", handleClick);
-      document.addEventListener("keydown", handleKeyPress);
     </script>
   </body>
 </html>
