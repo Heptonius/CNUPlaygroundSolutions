@@ -55,12 +55,12 @@
         }
       }
 
-      populateVoicesOptions(voices);
+      populateVoicesOptions();
       // browsers which return empty [] on immediate call of .getVoices()
       // after pageLoad have useful onvoiceschanged event
       if (synth.onvoiceschanged !== undefined) {
         synth.onvoiceschanged = () => {
-          populateVoicesOptions(voices);
+          populateVoicesOptions();
         };
       }
 
