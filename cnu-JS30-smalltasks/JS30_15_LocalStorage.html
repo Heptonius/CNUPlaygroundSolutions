@@ -48,26 +48,21 @@
         <li>Loading Tapas...</li>
       </ul>
       <form class="add-items">
-        <input
-          type="text"
-          name="item"
-          id="add-item-txt"
-          placeholder="Item Name"
-          required
-        />
+        <input type="text" name="item" id="add-item-txt" placeholder="Item Name" required />
         <input type="submit" value="+ Add Item" id="add-item" />
       </form>
     </div>
 
     <script>
-      const addItemTxt = document.querySelector("#add-item-txt");
+      //  DOMS
+      const addItemInputTxt = document.querySelector("#add-item-txt");
       const itemsList = document.querySelector(".plates");
       const addItemBtn = document.querySelector("#add-item");
 
       const items = [];
       const TAPAS_LOCAL_STORAGE_KEY = "tapas";
 
-      function removeElemValue(element) {
+      function clearTxtInputValue(element) {
         element.value = "";
       }
 
@@ -75,7 +70,7 @@
         return [...parrent.children].indexOf(element);
       }
 
-      function createLiElems(items, className) {
+      function createLiItems(items, className) {
         if (items.length === 0) {
           return `<li>Waiting for Tapas...</li>`;
         } else {
@@ -87,7 +82,7 @@
       }
 
       function refreshLiItems(itemsArray) {
-        const liItemsList = createLiElems(itemsArray);
+        const liItemsList = createLiItems(itemsArray);
         itemsList.innerHTML = [...liItemsList].join("");
       }
 
@@ -104,30 +99,31 @@
         localStorage.setItem(TAPAS_LOCAL_STORAGE_KEY, itemsToSet);
       }
 
-      function addItem(itemName) {
-        items.push(itemName);
+      function addItem(itemNameInput) {
+        items.push(itemNameInput.value);
+        refreshLiItems(items);
+        clearTxtInputValue(itemNameInput);
         setItemsToLocal();
       }
 
-      function removeItem(index) {
-        items.splice(indexOfElemInParrent(index, itemsList), 1);
-      }
-
-      function handleClick({ target }) {
+      function removeItem(target) {
         const targetElemIndex = indexOfElemInParrent(target, itemsList);
-        if (target.classList.contains("item-delete-btn")) {
-          removeItem(target);
-          refreshLiItems(items);
-          setItemsToLocal();
-        }
+        items.splice(targetElemIndex, 1);
+        refreshLiItems(items);
+        setItemsToLocal();
       }
 
       function handleAddItem(event) {
         event.preventDefault();
-        if (addItemTxt.value !== "") {
-          addItem(addItemTxt.value);
-          refreshLiItems(items);
-          removeElemValue(addItemTxt);
+        if (addItemInputTxt.value !== "") {
+          addItem(addItemInputTxt);
+        }
+      }
+
+      function handleClick(event) {
+        const targetLiElem = event.path[1];
+        if (event.target.classList.contains("item-delete-btn")) {
+          removeItem(targetLiElem);
         }
       }
 
