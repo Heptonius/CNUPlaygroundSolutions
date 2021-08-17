@@ -16,23 +16,27 @@
       recognition.lang = "en-US";
 
       const words = document.querySelector(".words");
-      let p = newParagraph();
+      let p = createParagraph();
 
-      function newParagraph() {
+      function createParagraph() {
         const paragaph = document.createElement("p");
         words.appendChild(paragaph);
         return paragaph;
       }
 
+      function getResultTranscript(recognitionResult) {
+        return recognitionResult[0].transcript;
+      }
+
       function processResults({ results }) {
         const transcript = Array.from(results)
-          .map((result) => result[0].transcript)
+          .map(getResultTranscript)
           .join("");
 
         p.textContent = transcript;
 
         if (results[0].isFinal) {
-          p = newParagraph();
+          p = createParagraph();
         }
       }
 

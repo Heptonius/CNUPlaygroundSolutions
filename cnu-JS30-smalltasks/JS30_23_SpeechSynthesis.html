@@ -41,12 +41,35 @@
       const speakButton = document.querySelector("#speak");
       const stopButton = document.querySelector("#stop");
 
+      const synth = window.speechSynthesis;
       const msg = new SpeechSynthesisUtterance();
-      var synth = window.speechSynthesis;
       const voices = [];
 
+      function populateVoicesOptions(voiceOptions) {
+        for (let i = 0; i < voiceOptions.length; i++) {
+          const option = document.createElement("option");
+          option.textContent = `${voiceOptions[i].name} (${voiceOptions[i].lang})`;
+          option.value = i;
+          voiceSelect.appendChild(option);
+        }
+      }
+
+      const getVoicesPromise = new Promise((resolve, reject) => {
+        id = setInterval(() => {
+          if (synth.getVoices().length !== 0) {
+            resolve(synth.getVoices());
+            clearInterval(id);
+          }
+        }, 10);
+      });
+
+      getVoicesPromise.then((voiceOptions) => {
+        voices.push(...voiceOptions);
+        populateVoicesOptions(voices);
+      });
+
       function startSpeech() {
-        var msg = new SpeechSynthesisUtterance(inputTxt.value);
+        const msg = new SpeechSynthesisUtterance(inputTxt.value);
         msg.voice = voices[voiceSelect.value];
         msg.rate = rateInput.value;
         msg.pitch = pitchInput.value;
@@ -56,30 +79,8 @@
       function stopSpeech() {
         synth.cancel();
       }
-
       speakButton.addEventListener("click", startSpeech);
       stopButton.addEventListener("click", stopSpeech);
-
-      function populateVoicesOptions(voiceOptions) {
-        for (var i = 0; i < voiceOptions.length; i++) {
-          var option = document.createElement("option");
-          option.textContent = `${voiceOptions[i].name} (${voiceOptions[i].lang})`;
-          option.value = i;
-          voiceSelect.appendChild(option);
-        }
-      }
-
-      new Promise((resolve, reject) => {
-        id = setInterval(() => {
-          if (synth.getVoices().length !== 0) {
-            resolve(synth.getVoices());
-            clearInterval(id);
-          }
-        }, 10);
-      }).then((voiceOptions) => {
-        voices.push(...voiceOptions);
-        populateVoicesOptions(voiceOptions);
-      });
     </script>
   </body>
 </html>
